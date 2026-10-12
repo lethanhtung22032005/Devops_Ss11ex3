@@ -43,21 +43,28 @@ tổng thời gian job **26s → 15s**, do không phải tải lại dependencie
 
 ## 4. Kiểm tra log lần push có cache
 
-Trong log của bước `setup-java`, xuất hiện dòng xác nhận khôi phục cache:
+Trích log thực tế bước `setup-java` ở run #3 (cache hit):
 
 ```
-Cache restored successfully from key: gradle-<hash>
+Cache hit for: setup-java-Linux-x64-gradle-e38e454da16c7726f3a3422630930982d476ef6bf850ffb7d231666018dfd4e8
+Received 1473489 of 1473489 (100.0%), 3.2 MBs/sec
+Cache Size: ~1 MB (1473489 B)
+Cache restored successfully
+Cache restored from key: setup-java-Linux-x64-gradle-e38e454da16c7726f3a3422630930982d476ef6bf850ffb7d231666018dfd4e8
+
+Cache hit for: setup-java-Linux-x64-gradle-wrapper-bc47103fbbf0a79870c3ba6f39353fa36d863b5768bc2f8a685915e5edab0
+Received 136021063 of 136021063 (100.0%), 94.0 MBs/sec
+Cache Size: ~130 MB (136021063 B)
+Cache restored successfully
+gradle-wrapper cache restored from key: setup-java-Linux-x64-gradle-wrapper-bc47103fbbf0a79870c3ba6f39353fa36d863b5768bc2f8a685915e5edab0
 ```
 
-Hoặc:
+Hai gói cache được khôi phục:
+- `setup-java-Linux-x64-gradle-<hash>` (~1 MB): cache dependencies/build của Gradle.
+- `setup-java-Linux-x64-gradle-wrapper-<hash>` (~130 MB): wrapper Gradle đầy đủ.
 
-```
-Received <N> MB over the network, <M> MB from cache
-Cache restored from key: gradle-<hash>
-```
-
-Nếu là lần đầu tiên, log sẽ hiển thị `Cache not found for input keys: gradle-<hash>`
-và cuối Job sẽ có bước `Post Setup Java` để lưu cache mới.
+Nếu là lần đầu tiên (cache miss), log sẽ hiển thị `Cache not found for input keys: ...`
+và cuối Job sẽ có bước `Post Thiết lập môi trường Java JDK 17` để lưu cache mới.
 
 ## 5. Kết luận
 
