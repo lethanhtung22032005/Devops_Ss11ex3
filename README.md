@@ -44,4 +44,5 @@ Xem chi tiết kết quả so sánh tại [report.md](report.md).
 ## Lịch sử push kiểm tra cache
 
 - Push #1: chưa có cache (cache miss) — job tải toàn bộ dependencies.
-- Push #2: cache hit — Gradle dependencies được khôi phục từ GitHub Actions Cache.
+- Push #2: chạy song song với #1 nên vẫn cache miss.
+- Push #3: cache hit — Gradle dependencies được khôi phục từ GitHub Actions Cache.
