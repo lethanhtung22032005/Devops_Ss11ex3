@@ -71,7 +71,17 @@ Nếu là lần đầu tiên (cache miss), log sẽ hiển thị `gradle cache i
 gradle cache is not found
 ```
 
-## 5. Kết luận
+## 5. Ảnh chụp màn hình minh chứng
+
+**Run #1 – cache miss (`gradle cache is not found`, job 26s):**
+
+![Run 1 cache miss](docs/run1-cache-miss.png)
+
+**Run #3 – cache hit (`Cache restored successfully`, job 15s):**
+
+![Run 3 cache hit](docs/run3-cache-hit.png)
+
+## 6. Kết luận
 
 - Sau khi cache được lưu, các lần push tiếp theo nhanh hơn rõ rệt: bước
   `./gradlew test` giảm từ ~16s xuống ~7s, tổng thời gian job giảm từ 26s xuống 15s.
