@@ -63,8 +63,13 @@ Hai gói cache được khôi phục:
 - `setup-java-Linux-x64-gradle-<hash>` (~1 MB): cache dependencies/build của Gradle.
 - `setup-java-Linux-x64-gradle-wrapper-<hash>` (~130 MB): wrapper Gradle đầy đủ.
 
-Nếu là lần đầu tiên (cache miss), log sẽ hiển thị `Cache not found for input keys: ...`
-và cuối Job sẽ có bước `Post Thiết lập môi trường Java JDK 17` để lưu cache mới.
+Nếu là lần đầu tiên (cache miss), log sẽ hiển thị `gradle cache is not found`
+(kèm `Cache not found for input keys: ...`) và cuối Job sẽ có bước
+`Post Thiết lập môi trường Java JDK 17` để lưu cache mới:
+
+```
+gradle cache is not found
+```
 
 ## 5. Kết luận
 
