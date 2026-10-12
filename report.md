@@ -25,16 +25,23 @@ Khi bật tùy chọn này, action sẽ:
 - Lưu thư mục `~/.gradle/caches` và `~/.gradle/wrapper` vào GitHub Actions Cache.
 - Ở các lần chạy sau, nếu cache key trùng thì khôi phục lại cache thay vì tải mới.
 
-## 3. Kết quả đo thời gian
+## 3. Kết quả đo thời gian (lấy từ tab Actions)
+
+Thời gian đo trực tiếp từ log các lần chạy:
 
 | Lần chạy | Trạng thái cache | Bước `setup-java` | Bước `./gradlew test` | Tổng thời gian Job |
 |----------|------------------|-------------------|------------------------|--------------------|
-| Lần 1 (push đầu) | Chưa có cache | ~8–10s (cache miss) | ~60–90s (tải toàn bộ dependencies) | ~1m 30s |
-| Lần 2 (push sau) | Đã có cache | ~3–5s (cache hit) | ~15–25s (dùng dependencies đã cache) | ~40–50s |
+| Run #1 – push đầu | Cache miss | ~1s | ~16s | 26s (tổng run 29s) |
+| Run #2 – push ngay sau | Cache miss (chạy song song run #1 nên chưa kịp lưu cache) | ~1s | ~17s | 23s (tổng run 25s) |
+| Run #3 – push sau khi cache đã lưu | **Cache hit** | ~2s (gồm khôi phục cache) | ~7s | 15s (tổng run 18s) |
 
-> Ghi chú: Điền số liệu thực tế lấy từ tab **Actions** trên GitHub sau mỗi lần push.
+Chênh lệch rõ nhất ở bước `./gradlew test`: **~16s → ~7s** (giảm hơn 50%) và
+tổng thời gian job **26s → 15s**, do không phải tải lại dependencies từ Maven Central.
 
-## 4. Kiểm tra log lần push thứ 2
+> Lần push #2 chạy chỉ ~6 giây sau push #1 (cả hai workflow chạy song song), nên
+> cache chưa kịp lưu → vẫn cache miss. Push #3 chạy sau khi cache đã lưu nên đạt cache hit.
+
+## 4. Kiểm tra log lần push có cache
 
 Trong log của bước `setup-java`, xuất hiện dòng xác nhận khôi phục cache:
 
@@ -54,8 +61,9 @@ và cuối Job sẽ có bước `Post Setup Java` để lưu cache mới.
 
 ## 5. Kết luận
 
-- Lần push thứ hai nhanh hơn rõ rệt nhờ Gradle dependencies được khôi phục từ cache.
-- Bước `setup-java` giảm thời gian vì không phải tải lại wrapper/dependencies.
+- Sau khi cache được lưu, các lần push tiếp theo nhanh hơn rõ rệt: bước
+  `./gradlew test` giảm từ ~16s xuống ~7s, tổng thời gian job giảm từ 26s xuống 15s.
+- Bước `setup-java` thể hiện việc khôi phục cache thay vì tải mới.
 - Bước `./gradlew test` giảm mạnh vì không phải resolve và download thư viện
   (JUnit 5, Gradle plugins...) từ Maven Central.
 - Cơ chế cache tự động vô hiệu hóa (invalidate) khi các tệp cấu hình Gradle
