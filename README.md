@@ -40,3 +40,8 @@ giữa các lần chạy, giúp lần push thứ 2 nhanh hơn đáng kể.
 ```
 
 Xem chi tiết kết quả so sánh tại [report.md](report.md).
+
+## Lịch sử push kiểm tra cache
+
+- Push #1: chưa có cache (cache miss) — job tải toàn bộ dependencies.
+- Push #2: cache hit — Gradle dependencies được khôi phục từ GitHub Actions Cache.
